@@ -1,0 +1,11 @@
+{
+    "helloWorld": "Hello World!",
+    "email": "Email",
+    "login": "Login",
+    "createAccount": "Create Account?",
+    "password": "Password",
+    
+    "changeLang": "Change Language",
+    "thai": "Thai",
+    "eng": "English"
+}
