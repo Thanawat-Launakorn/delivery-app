@@ -20,7 +20,7 @@ class LanguageInitial extends LanguageState {
           width: 18,
           height: 18,
         ),
-        text: 'th')
+        text: 'un')
   ];
   LanguageInitial({LanguageModel? selectedLanguage})
       : selectedLanguage = selectedLanguage ?? languages[1];

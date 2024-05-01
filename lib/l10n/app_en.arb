@@ -7,5 +7,9 @@
     
     "changeLang": "Change Language",
     "thai": "Thai",
-    "eng": "English"
+    "eng": "English",
+    "search": "Search",
+
+    "send_now": "Send",
+    "pick_up_at_the_store": "Pick Up"
 }
