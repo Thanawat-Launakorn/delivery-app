@@ -4,12 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_application_1/domain/bloc/auth/auth_bloc.dart';
-import 'package:flutter_application_1/domain/bloc/user/user_bloc.dart';
 import 'package:flutter_application_1/domain/cubit/auth/auth.cubit.dart';
 import 'package:flutter_application_1/domain/db_helper/cache_token.dart';
 import 'package:flutter_application_1/domain/cubit/lang/language_cubit.dart';
 import 'package:flutter_application_1/domain/service/auth/auth.service.dart';
-import 'package:flutter_application_1/domain/service/user/user_service.dart';
 import 'package:flutter_application_1/feature/screen/login/screen/login.index..dart';
 
 void main() {
@@ -21,7 +19,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserService service = UserService();
+    // UserService service = UserService();
     AuthService authService = AuthService();
     CacheToken cacheToken = CacheToken();
     var kColorScheme = ColorScheme.fromSeed(seedColor: Colors.green);
@@ -82,7 +80,6 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => AuthCubit(authService, cacheToken),
           ),
-          BlocProvider<UserBloc>(create: (context) => UserBloc(service)),
           BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
           BlocProvider(
             create: (context) => LanguageCubit(),

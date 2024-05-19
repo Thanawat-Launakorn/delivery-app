@@ -22,7 +22,7 @@ class ChangeLangModal extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(translations(context)!.changeLang),
+            Text(translations(context)!.changeLang, style: Theme.of(context).textTheme.titleMedium,),
             const SizedBox(
               height: 16,
             ),
