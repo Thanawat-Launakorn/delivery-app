@@ -1,16 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/asset/image.dart';
+import 'package:flutter_application_1/utils/common.dart';
+import 'package:flutter_application_1/widget/colors.dart';
+import 'package:flutter_application_1/l10n/translations.dart';
 import 'package:flutter_application_1/domain/cubit/lang/language_cubit.dart';
-import 'package:flutter_application_1/feature/screen/home/widget/iconButtonOnAppBar.dart';
 import 'package:flutter_application_1/feature/screen/home/widget/productItem.dart';
 import 'package:flutter_application_1/feature/screen/login/widget/changeLang.dart';
-import 'package:flutter_application_1/l10n/translations.dart';
+import 'package:flutter_application_1/feature/screen/home/widget/iconButtonOnAppBar.dart';
 import 'package:flutter_application_1/feature/screen/home/widget/bottomModalChangeAddress.dart';
-import 'package:flutter_application_1/widget/colors.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -58,10 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (context) => const ChangeLangModal(),
     );
-  }
-
-  void onNavigateToScreen(BuildContext context, String routeName) {
-    Navigator.pushNamed(context, routeName);
   }
 
   @override

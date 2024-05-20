@@ -32,7 +32,8 @@ class _CartScreenState extends State<CartScreen> {
                 itemCount: 20,
                 itemBuilder: (context, index) {
                   return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 18),
                     width: MediaQuery.of(context).size.width,
                     child: Row(
                       children: [
@@ -45,7 +46,7 @@ class _CartScreenState extends State<CartScreen> {
                               boxShadow: const [
                                 BoxShadow(
                                     color: Colors.black26,
-                                    spreadRadius: 1,
+                                    spreadRadius: .5,
                                     blurRadius: 1)
                               ],
                               borderRadius: BorderRadius.circular(12),
@@ -59,11 +60,13 @@ class _CartScreenState extends State<CartScreen> {
                           children: [
                             Text(
                               'title named',
-                              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
                             ),
                             Text(
                               '\$2.99',
@@ -77,6 +80,78 @@ class _CartScreenState extends State<CartScreen> {
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                             )
+                          ],
+                        ),
+                        const Spacer(
+                          flex: 1,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              height: 35,
+                              width: 33,
+                              decoration: const BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      spreadRadius: .5,
+                                    )
+                                  ],
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(12),
+                                      bottomLeft: Radius.circular(12))),
+                              child: Icon(
+                                Icons.remove,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .inversePrimary,
+                              ),
+                            ),
+                            Container(
+                              height: 35,
+                              width: 33,
+                              decoration: BoxDecoration(
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    spreadRadius: .5,
+                                  )
+                                ],
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .inversePrimary,
+                              ),
+                              child: Center(
+                                  child: Text(
+                                '2',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall!
+                                    .copyWith(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                              )),
+                            ),
+                            Container(
+                              height: 35,
+                              width: 33,
+                              decoration: const BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black26,
+                                        spreadRadius: 1,
+                                        blurRadius: 1)
+                                  ],
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(12),
+                                      bottomRight: Radius.circular(12))),
+                              child: Icon(
+                                Icons.add,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .inversePrimary,
+                              ),
+                            ),
                           ],
                         )
                       ],

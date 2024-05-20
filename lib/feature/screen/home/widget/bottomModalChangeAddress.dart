@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/feature/screen/home/screen/lastLocationScreen.dart';
+import 'package:flutter_application_1/utils/common.dart';
 import 'package:flutter_application_1/widget/constants/button.dart';
 
 class BottomModalChangeAddress extends StatelessWidget {
@@ -48,7 +50,9 @@ class BottomModalChangeAddress extends StatelessWidget {
           ),
           AppButton(
             text: 'แก้ที่อยู่จัดส่ง',
-            onPressed: () {},
+            onPressed: () {
+              onNavigateToScreen(context, 'lastLocation');
+            },
             size: AppButtonSize.SMALL,
           )
         ],
