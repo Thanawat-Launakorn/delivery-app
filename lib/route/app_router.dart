@@ -9,16 +9,15 @@ import 'package:flutter_application_1/feature/screen/login/screen/login.index..d
 import 'package:flutter_application_1/feature/screen/home/screen/homeScreen.dart';
 import 'package:flutter_application_1/feature/screen/login/screen/register.index.dart';
 
-const String welcomeViewRoute = '/welcome';
-const String homeViewRoute = 'home';
-const String loginViewRoute = 'login';
-const String registerViewRoute = 'register';
-const String favoriteViewRoute = 'favorite';
-const String personalViewRoute = 'personal';
-const String searchViewRoute = 'search';
-const String cartViewRoute = 'cart';
-const String productDetailViewRoute = 'productDetail';
-const String lastLocationViewRoute = 'lastLocation';
+const String loginViewRoute = '/';
+const String homeViewRoute = '/home';
+const String registerViewRoute = '/register';
+const String favoriteViewRoute = '/favorite';
+const String personalViewRoute = '/personal';
+const String searchViewRoute = '/search';
+const String cartViewRoute = '/cart';
+const String productDetailViewRoute = '/productDetail';
+const String lastLocationViewRoute = '/lastLocation';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -31,7 +30,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case lastLocationViewRoute:
       return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-          LastLocationScreen(),
+            LastLocationScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = const Offset(0.0, 1.0);
           var end = Offset.zero;
@@ -77,12 +76,25 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   }
 }
 
+class initialScreen extends StatelessWidget {
+  const initialScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('initial'),
+      ),
+    );
+  }
+}
+
 class UndefinedScreen extends StatelessWidget {
   const UndefinedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container();
   }
 }
 

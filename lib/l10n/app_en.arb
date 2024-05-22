@@ -11,6 +11,10 @@
     "search": "Search",
 
     "send_now": "Send",
-    "pick_up_at_the_store": "Pick Up"
+    "pick_up_at_the_store": "Pick Up",
+
+
+    "please_input_your_email":  "Please input your email",
+    "please_input_your_password": "Please input your password"
 
 }

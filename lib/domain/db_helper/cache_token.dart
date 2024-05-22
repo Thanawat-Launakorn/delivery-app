@@ -17,10 +17,13 @@ class CacheToken {
     return tokenUser ?? noToken;
   }
 
+  // clear token
+  void deleteToken() {
+    _flutterSecureStorage.delete(key: token);
+  }
+
   // clear localStorage
   void deleteAll() {
     _flutterSecureStorage.deleteAll();
   }
-
-
 }

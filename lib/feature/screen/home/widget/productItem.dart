@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/asset/image.dart';
+import 'package:flutter_application_1/utils/common.dart';
 import 'package:flutter_application_1/widget/colors.dart';
 
 class ProductItem extends StatefulWidget {
@@ -15,7 +16,7 @@ class _ProductItemState extends State<ProductItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, 'productDetail');
+        onNavigateToScreen(context, '/cart');
       },
       child: Stack(clipBehavior: Clip.none, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [

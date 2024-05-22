@@ -2,8 +2,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/asset/image.dart';
+import 'package:flutter_application_1/utils/common.dart';
 import 'package:flutter_application_1/l10n/translations.dart';
 import 'package:flutter_application_1/widget/constants/button.dart';
+import 'package:flutter_application_1/widget/constants/snack_bar.dart';
+import 'package:flutter_application_1/domain/cubit/auth/auth.cubit.dart';
 import 'package:flutter_application_1/domain/cubit/lang/language_cubit.dart';
 import 'package:flutter_application_1/feature/screen/login/widget/changeLang.dart';
 
@@ -25,6 +28,10 @@ class _LoginScreenState extends State<LoginScreen> {
     _email = TextEditingController();
     _password = TextEditingController();
 
+    setState(() {
+      _email = TextEditingController(text: 'john@gmail.com');
+      _password = TextEditingController(text: 'changeme');
+    });
     super.initState();
   }
 
@@ -49,19 +56,16 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void handleChangeLang() {}
-
   void onPressedLogin(BuildContext context) {
-    // if (_email.text.isEmpty) {
-    //   snackBar(context, "Please input your email");
-    // } else if (_password.text.isEmpty) {
-    //   snackBar(context, "Please input your password");
-    // } else {
-    //   context
-    //       .read<AuthCubit>()
-    //       .loginLogic(_email.text, _password.text, context);
-    // }
-    Navigator.pushReplacementNamed(context, 'home');
+    if (_email.text.isEmpty) {
+      snackBar(context, translations(context)!.please_input_your_email);
+    } else if (_password.text.isEmpty) {
+      snackBar(context, translations(context)!.please_input_your_password);
+    } else {
+      context
+          .read<AuthCubit>()
+          .loginLogic(_email.text, _password.text, context);
+    }
   }
 
   @override
@@ -115,120 +119,151 @@ class _LoginScreenState extends State<LoginScreen> {
             )
           ],
         ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-              child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              children: [
-                Expanded(
-                    child: Container(
-                        width: double.infinity,
-                        child: Image(
-                            image:
-                                AssetImage(Asset.images['basket'] as String)))),
-                Expanded(
-                  flex: 2,
+        body: BlocListener<AuthCubit, AuthState>(
+          listener: (context, state) {
+            // TODO: implement listener
+            if (state is LoginLoadingState && state.isLoading) {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  });
+            } else {
+              Future.delayed(const Duration(milliseconds: 1000), () {
+                Navigator.pop(context);
+                if (state is LoginSuccessState) {
+                  onReplaceToScreen(context, '/home');
+                } else if (state is LoginFailureState) {
+                  snackBar(context, state.error);
+                }
+              });
+            }
+          },
+          child: SafeArea(
+            child: SingleChildScrollView(
+                clipBehavior: Clip.none,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  height: MediaQuery.of(context).size.height,
                   child: Column(
                     children: [
-                      Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Login',
-                            style: Theme.of(context).textTheme.titleLarge,
-                          )),
-                      const SizedBox(
-                        height: 32,
-                      ),
-                      TextField(
-                          style: Theme.of(context).textTheme.titleSmall,
-                          controller: _email,
-                          decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.person),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              label: Text(translations(context)!.email))),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      TextField(
-                          style: Theme.of(context).textTheme.titleSmall,
-                          obscureText: _check,
-                          obscuringCharacter: '*',
-                          controller: _password,
-                          decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.lock),
-                              suffixIcon: IconButton(
-                                icon: _check
-                                    ? const Icon(Icons.lock)
-                                    : const Icon(Icons.key_off),
-                                onPressed: handleHidePassword,
-                              ),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              label: Text(
-                                translations(context)!.password,
-                              ))),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      AppButton(
-                          text: translations(context)!.login,
-                          onPressed: () {
-                            onPressedLogin(context);
-                          }),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      Row(
-                        children: [
-                          const Expanded(
-                              child: Divider(
-                            height: 1,
-                          )),
-                          Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: Text(
-                                'or',
+                      Expanded(
+                          child: Container(
+                              width: double.infinity,
+                              child: Image(
+                                  image: AssetImage(
+                                      Asset.images['basket'] as String)))),
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          children: [
+                            Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Login',
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                )),
+                            const SizedBox(
+                              height: 32,
+                            ),
+                            TextField(
                                 style: Theme.of(context).textTheme.titleSmall,
-                              )),
-                          const Expanded(
-                              child: Divider(
-                            height: 1,
-                          ))
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      SizedBox(
-                          width: double.infinity,
-                          child: RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                                text: 'Dont\' have any account?',
+                                controller: _email,
+                                decoration: InputDecoration(
+                                    prefixIcon: const Icon(Icons.person),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    label: Text(translations(context)!.email))),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            TextField(
                                 style: Theme.of(context).textTheme.titleSmall,
-                                children: [
-                                  const TextSpan(text: ' '),
-                                  TextSpan(
-                                      text: 'Create one',
+                                obscureText: _check,
+                                obscuringCharacter: '*',
+                                controller: _password,
+                                decoration: InputDecoration(
+                                    prefixIcon: const Icon(Icons.lock),
+                                    suffixIcon: IconButton(
+                                      icon: _check
+                                          ? const Icon(Icons.lock)
+                                          : const Icon(Icons.key_off),
+                                      onPressed: handleHidePassword,
+                                    ),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    label: Text(
+                                      translations(context)!.password,
+                                    ))),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            AppButton(
+                                text: translations(context)!.login,
+                                onPressed: () {
+                                  onPressedLogin(context);
+                                }),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Row(
+                              children: [
+                                const Expanded(
+                                    child: Divider(
+                                  height: 1,
+                                )),
+                                Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: Text(
+                                      'or',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .titleSmall!
-                                          .copyWith(color: Colors.green),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () => Navigator.pushNamed(
-                                            context, 'register'))
-                                ]),
-                          )),
+                                          .titleSmall,
+                                    )),
+                                const Expanded(
+                                    child: Divider(
+                                  height: 1,
+                                ))
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            SizedBox(
+                                width: double.infinity,
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                      text: 'Dont\' have any account?',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall,
+                                      children: [
+                                        const TextSpan(text: ' '),
+                                        TextSpan(
+                                            text: 'Create one',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall!
+                                                .copyWith(color: Colors.green),
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () =>
+                                                  onNavigateToScreen(
+                                                      context, '/register'))
+                                      ]),
+                                )),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ),
-              ],
-            ),
-          )),
+                )),
+          ),
         ));
   }
 }

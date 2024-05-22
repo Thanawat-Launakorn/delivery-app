@@ -9,4 +9,14 @@ class LoginLoadingState extends AuthState {
   LoginLoadingState({ required this.isLoading });
 }
 
+class LoginSuccessState extends AuthState {
+  String token;
+  LoginSuccessState({ required this.token });
+}
+
+class LoginFailureState extends AuthState {
+  String error;
+  LoginFailureState({ required this.error });
+}
+
 

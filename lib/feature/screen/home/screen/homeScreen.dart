@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onClickSearchField(BuildContext context) {
-    Navigator.pushNamed(context, 'search');
+    onNavigateToScreen(context, '/search');
   }
 
   void onPressChangeLang(BuildContext context) {
@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ? Row(children: [
                 IconButtonOnAppBar(
                     onPress: () {
-                      onNavigateToScreen(context, 'favorite');
+                      onNavigateToScreen(context, '/favorite');
                     },
                     child: const Icon(
                       Icons.favorite_outline,
@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 IconButtonOnAppBar(
                     onPress: () {
-                      onNavigateToScreen(context, 'personal');
+                      onNavigateToScreen(context, '/personal');
                     },
                     child: const Icon(
                       Icons.person_outline,
@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   IconButtonOnAppBar(
                       onPress: () {
-                        onNavigateToScreen(context, 'search');
+                        onNavigateToScreen(context, '/search');
                       },
                       child: const Icon(Icons.search_outlined,
                           color: Colors.white)),
@@ -171,10 +171,23 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text('ส่งทันที'), Text('your address')],
+                GestureDetector(
+                  onTap: () {
+                    print('dd');
+                  },
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('ส่งทันที'),
+                      Row(children: [
+                        Text('เลือกที่อยู่จัดส่ง'),
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.white,
+                        )
+                      ])
+                    ],
+                  ),
                 ),
                 Align(
                   child: Image(
@@ -328,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
           width: MediaQuery.of(context).size.width,
           child: InkWell(
             onTap: () {
-              onNavigateToScreen(context, 'cart');
+              onNavigateToScreen(context, '/cart');
             },
             child: Container(
               height: 60,
@@ -337,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 BoxShadow(color: Colors.black12, blurRadius: 2, spreadRadius: 2)
               ], color: Theme.of(context).colorScheme.inversePrimary),
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -350,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         children: [
                           Icon(
-                            Icons.card_giftcard_outlined,
+                            Icons.local_grocery_store_outlined,
                             size: 16,
                             color: AppColors.colors['white'],
                           ),
@@ -390,7 +403,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-
       ]),
       floatingActionButton: AnimatedOpacity(
         opacity: _visibleAppBar ? 1 : 0,

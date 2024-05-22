@@ -11,6 +11,9 @@
     "search": "ค้นหา",
 
     "send_now": "ส่งทันที",
-    "pick_up_at_the_store": "รับที่ร้าน"
+    "pick_up_at_the_store": "รับที่ร้าน",
+
+    "please_input_your_email": "กรุณาใส่อีเมลของคุณ",
+    "please_input_your_password": "กรุณาใส่รหัสผ่านของคุณ"
 
 }

@@ -106,7 +106,7 @@ class MyApp extends StatelessWidget {
                     ],
                     supportedLocales: AppLocalizations.supportedLocales,
                     locale: state.selectedLanguage.local,
-                    home: LoginScreen()),
+                    ),
               );
             } else {
               return const Placeholder();
