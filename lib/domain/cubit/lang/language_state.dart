@@ -12,7 +12,7 @@ class LanguageInitial extends LanguageState {
           width: 18,
           height: 18,
         ),
-        text: 'th'),
+        text: 'ไทย'),
     LanguageModel(
         local: const Locale('en'),
         flag: CountryFlag.fromCountryCode(
@@ -20,7 +20,7 @@ class LanguageInitial extends LanguageState {
           width: 18,
           height: 18,
         ),
-        text: 'un')
+        text: 'english')
   ];
   LanguageInitial({LanguageModel? selectedLanguage})
       : selectedLanguage = selectedLanguage ?? languages[1];

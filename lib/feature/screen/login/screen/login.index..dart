@@ -1,5 +1,8 @@
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/domain/config/config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/asset/image.dart';
 import 'package:flutter_application_1/utils/common.dart';
@@ -9,6 +12,7 @@ import 'package:flutter_application_1/widget/constants/snack_bar.dart';
 import 'package:flutter_application_1/domain/cubit/auth/auth.cubit.dart';
 import 'package:flutter_application_1/domain/cubit/lang/language_cubit.dart';
 import 'package:flutter_application_1/feature/screen/login/widget/changeLang.dart';
+import 'package:flutter_application_1/domain/model/request_body/authRequestBody.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -28,9 +32,16 @@ class _LoginScreenState extends State<LoginScreen> {
     _email = TextEditingController();
     _password = TextEditingController();
 
+    // 🧑🏻‍💼 admin
+    // setState(() {
+    //   _email = TextEditingController(text: 'john@gmail.com');
+    //   _password = TextEditingController(text: 'changeme');
+    // });
+
+    // // 🧑🏻‍🦰 client
     setState(() {
-      _email = TextEditingController(text: 'john@gmail.com');
-      _password = TextEditingController(text: 'changeme');
+      _email = TextEditingController(text: 'maria@gmail.com');
+      _password = TextEditingController(text: 'guess');
     });
     super.initState();
   }
@@ -62,9 +73,9 @@ class _LoginScreenState extends State<LoginScreen> {
     } else if (_password.text.isEmpty) {
       snackBar(context, translations(context)!.please_input_your_password);
     } else {
-      context
-          .read<AuthCubit>()
-          .loginLogic(_email.text, _password.text, context);
+      final AuthRequest body =
+          AuthRequest(email: _email.text, password: _password.text);
+      context.read<AuthCubit>().loginLogic(body, context);
     }
   }
 

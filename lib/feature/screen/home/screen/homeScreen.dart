@@ -1,4 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_application_1/feature/screen/home/widget/buttonCategory.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/asset/image.dart';
 import 'package:flutter_application_1/utils/common.dart';
@@ -48,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onClickSearchField(BuildContext context) {
-    onNavigateToScreen(context, '/search');
+    onNavigateToScreen(context, '/searchProduct');
   }
 
   void onPressChangeLang(BuildContext context) {
@@ -118,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 IconButtonOnAppBar(
                     onPress: () {
-                      onNavigateToScreen(context, '/personal');
+                      onNavigateToScreen(context, '/settings');
                     },
                     child: const Icon(
                       Icons.person_outline,
@@ -145,11 +149,11 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
     );
     int itemC = 24;
-    int rowCount = (itemC / 2).ceil();
-    double totalHeight = (rowCount * 200) + ((rowCount - 1) * 24);
-    double screenHeight = MediaQuery.of(context).size.height;
-    double appBarHeight = appBar.preferredSize.height;
     double topContainerHeight = 150;
+    int rowCount = (itemC / 2).ceil();
+    double appBarHeight = appBar.preferredSize.height;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double totalHeight = (rowCount * 200) + ((rowCount - 1) * 24);
     double availableHeight = screenHeight - appBarHeight - topContainerHeight;
 
     double gridViewHeight =
@@ -266,6 +270,58 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'หมวดหมู่สินค้า',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 14,
+                                      ),
+                                ),
+                                Text(
+                                  'ดูทั้งหมด > ',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // gridView have crossAxisCount: 2 and scroll horizontal
+                      Container(
+                          width: double.infinity,
+                          height: 200,
+                          child: GridView.builder(
+                              scrollDirection: Axis.horizontal,
+                              primary: false,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisSpacing: 24, crossAxisCount: 2),
+                              itemCount: 20,
+                              itemBuilder: (context, index) => ButtonCategory(
+                                  imgURL:
+                                      'http://localhost:3000/uploads/category/1720010623736-Image.png'))),
                       const SizedBox(
                         height: 24,
                       ),

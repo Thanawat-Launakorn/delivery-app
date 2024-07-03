@@ -28,7 +28,9 @@ class _ProductItemState extends State<ProductItem> {
                     image: AssetImage(Asset.images["basket"] as String),
                     fit: BoxFit.contain),
                 borderRadius: BorderRadius.circular(10),
-                boxShadow: [BoxShadow(color: Colors.grey[500]!, spreadRadius: 1)],
+                boxShadow: [
+                  BoxShadow(color: Colors.grey[500]!, spreadRadius: 1)
+                ],
                 color: Colors.white,
               ),
             ),

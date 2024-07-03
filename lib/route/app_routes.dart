@@ -1,33 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/feature/screen/home/screen/cartScreen.dart';
-import 'package:flutter_application_1/feature/screen/home/screen/favoriteScreen.dart';
-import 'package:flutter_application_1/feature/screen/home/screen/lastLocationScreen.dart';
-import 'package:flutter_application_1/feature/screen/home/screen/personalScreen.dart';
-import 'package:flutter_application_1/feature/screen/home/screen/productDetailScreen.dart';
+import 'package:flutter_application_1/feature/screen/home/screen/homeScreen.dart';
 import 'package:flutter_application_1/feature/screen/home/screen/searchScreen.dart';
 import 'package:flutter_application_1/feature/screen/login/screen/login.index..dart';
-import 'package:flutter_application_1/feature/screen/home/screen/homeScreen.dart';
+import 'package:flutter_application_1/feature/screen/home/screen/personalScreen.dart';
+import 'package:flutter_application_1/feature/screen/home/screen/favoriteScreen.dart';
 import 'package:flutter_application_1/feature/screen/login/screen/register.index.dart';
+import 'package:flutter_application_1/feature/screen/home/screen/lastLocationScreen.dart';
+import 'package:flutter_application_1/feature/screen/home/screen/productDetailScreen.dart';
+import 'package:flutter_application_1/feature/screen/home/screen/categoryDetailScreen.dart';
+import 'package:flutter_application_1/route/app_arguments.dart';
 
-const String loginViewRoute = '/';
-const String homeViewRoute = '/home';
-const String registerViewRoute = '/register';
-const String favoriteViewRoute = '/favorite';
-const String personalViewRoute = '/personal';
-const String searchViewRoute = '/search';
-const String cartViewRoute = '/cart';
-const String productDetailViewRoute = '/productDetail';
-const String lastLocationViewRoute = '/lastLocation';
+class AppRoutes {
+  static const login = '/';
+  static const home = '/home';
+  static const cart = '/cart';
+  static const register = '/register';
+  static const favorite = '/favorite';
+  static const settings = '/settings';
+  static const lastLocation = '/lastLocation';
+  static const productDetail = '/productDetail';
+  static const searchProduct = '/searchProduct';
+  static const categoryDetail = '/categoryDetail';
+}
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
-    case homeViewRoute:
-      return MaterialPageRoute(builder: (context) => HomeScreen());
+    case AppRoutes.home:
+      Widget builder(BuildContext context) {
+        return HomeScreen();
+      }
 
-    case cartViewRoute:
-      return MaterialPageRoute(builder: (context) => CartScreen());
+      return MaterialPageRoute(builder: builder);
 
-    case lastLocationViewRoute:
+    case AppRoutes.cart:
+      Widget builder(BuildContext context) {
+        return CartScreen();
+      }
+
+      return MaterialPageRoute(builder: builder);
+
+    case AppRoutes.lastLocation:
       return PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             LastLocationScreen(),
@@ -46,46 +59,43 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         },
       );
 
-    case productDetailViewRoute:
+    case AppRoutes.categoryDetail:
+      Widget builder(BuildContext context) {
+        final args = settings.arguments as CategoryDetailArguments;
+        return CategoryDetailScreen(
+          arguments: args,
+        );
+      }
+
+      return MaterialPageRoute(builder: builder);
+
+    case AppRoutes.productDetail:
       return MaterialPageRoute(
         builder: (context) => ProductDetailScreen(),
       );
 
-    case favoriteViewRoute:
+    case AppRoutes.favorite:
       return MaterialPageRoute(
         builder: (context) => FavoriteScreen(),
       );
 
-    case personalViewRoute:
+    case AppRoutes.settings:
       return MaterialPageRoute(builder: (context) => PersonalScreen());
 
-    case loginViewRoute:
+    case AppRoutes.login:
       var argument = settings.arguments.toString();
       return MaterialPageRoute(builder: (context) => LoginScreen());
 
-    case registerViewRoute:
+    case AppRoutes.register:
       return MaterialPageRoute(builder: (context) => RegisterScreen());
 
-    case searchViewRoute:
+    case AppRoutes.searchProduct:
       return MaterialPageRoute(
         builder: (context) => SearchScreen(),
       );
 
     default:
       return MaterialPageRoute(builder: (context) => UndefinedScreen());
-  }
-}
-
-class initialScreen extends StatelessWidget {
-  const initialScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('initial'),
-      ),
-    );
   }
 }
 
