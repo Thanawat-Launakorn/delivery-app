@@ -1,5 +1,5 @@
 class GetAllCategoryResponse {
-  final String id;
+  final int id;
   final String image;
   final String category;
   final String description;
@@ -22,9 +22,9 @@ class GetAllCategoryResponse {
 
   factory GetAllCategoryResponse.fromJson(Map<String, dynamic> json) {
     return GetAllCategoryResponse(
-        id: json['id'],
-        image: json['image'],
-        category: json['category'],
-        description: json['description']);
+        id: json['id'] as int,
+        image: json['image'] as String,
+        category: json['category'] as String,
+        description: json['description'] as String);
   }
 }

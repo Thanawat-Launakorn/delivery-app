@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/domain/bloc/cart/cart_bloc.dart';
+import 'package:flutter_application_1/domain/cubit/address/address_cubit.dart';
+import 'package:flutter_application_1/domain/cubit/category/category_cubit.dart';
+import 'package:flutter_application_1/domain/cubit/product/product_cubit.dart';
 import 'route/app_routes.dart' as router;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -80,7 +84,17 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => LanguageCubit(),
-          )
+          ),
+          BlocProvider(
+            create: (context) => CategoryCubit()..fetchCategory(),
+          ),
+          BlocProvider(
+            create: (context) => ProductCubit()..fetchProduct(),
+          ),
+          BlocProvider(create: (context) => CartBloc()),
+          BlocProvider(create: (context) => AddressCubit())
+
+          // call fetchCategory
         ],
         child: BlocBuilder<LanguageCubit, LanguageState>(
           builder: (context, state) {
@@ -90,20 +104,20 @@ class MyApp extends StatelessWidget {
                   FocusManager.instance.primaryFocus?.unfocus();
                 },
                 child: MaterialApp(
-                    theme: theme,
-                    onGenerateRoute: router.generateRoute,
-                    initialRoute: '/',
-                    debugShowCheckedModeBanner: false,
-                    title: 'flutter app',
-                    localizationsDelegates: const [
-                      AppLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate
-                    ],
-                    supportedLocales: AppLocalizations.supportedLocales,
-                    locale: state.selectedLanguage.local,
-                    ),
+                  theme: theme,
+                  onGenerateRoute: router.AppGenerateRoutes().generateRoute,
+                  initialRoute: '/',
+                  debugShowCheckedModeBanner: false,
+                  title: 'flutter app',
+                  localizationsDelegates: const [
+                    AppLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate
+                  ],
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  locale: state.selectedLanguage.local,
+                ),
               );
             } else {
               return const Placeholder();

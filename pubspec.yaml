@@ -75,6 +75,11 @@ flutter:
   assets:
     - images/png/basket.png
     - images/png/carousel.png
+    - images/png/emptyCart.png
+    - images/png/successOrder.png
+    - images/png/noAddress.png
+    - images/png/noFav.png
+    - images/png/noOrders.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

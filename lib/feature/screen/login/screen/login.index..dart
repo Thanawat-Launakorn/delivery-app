@@ -2,7 +2,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/domain/config/config.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/asset/image.dart';
 import 'package:flutter_application_1/utils/common.dart';

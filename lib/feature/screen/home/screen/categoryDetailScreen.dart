@@ -9,8 +9,9 @@ class CategoryDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Category Detail'),
+        title: Text('${arguments.id}'),
       ),
+      body: Text('${arguments.id}'),
     );
   }
 }

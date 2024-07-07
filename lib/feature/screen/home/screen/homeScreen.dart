@@ -1,16 +1,17 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_application_1/feature/screen/home/widget/buttonCategory.dart';
+import 'package:flutter_application_1/feature/screen/home/widget/bottomCart.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/asset/image.dart';
 import 'package:flutter_application_1/utils/common.dart';
-import 'package:flutter_application_1/widget/colors.dart';
 import 'package:flutter_application_1/l10n/translations.dart';
+import 'package:flutter_application_1/route/app_arguments.dart';
+import 'package:flutter_application_1/domain/bloc/cart/cart_bloc.dart';
 import 'package:flutter_application_1/domain/cubit/lang/language_cubit.dart';
+import 'package:flutter_application_1/domain/cubit/product/product_cubit.dart';
+import 'package:flutter_application_1/domain/cubit/category/category_cubit.dart';
 import 'package:flutter_application_1/feature/screen/home/widget/productItem.dart';
 import 'package:flutter_application_1/feature/screen/login/widget/changeLang.dart';
+import 'package:flutter_application_1/feature/screen/home/widget/buttonCategory.dart';
 import 'package:flutter_application_1/feature/screen/home/widget/iconButtonOnAppBar.dart';
 import 'package:flutter_application_1/feature/screen/home/widget/bottomModalChangeAddress.dart';
 
@@ -29,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    //handleScroll
     _scrollController.addListener(() {
       if (_scrollController.offset > 50) {
         // attached appbar
@@ -176,9 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
-                  onTap: () {
-                    print('dd');
-                  },
+                  onTap: () {},
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -206,6 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
         RawScrollbar(
           controller: _scrollController,
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             controller: _scrollController,
             padding: const EdgeInsets.only(top: 60),
             child: Stack(
@@ -274,8 +275,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 12,
                       ),
                       Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 16),
                         child: Column(
                           children: [
                             Row(
@@ -292,15 +293,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                         fontSize: 14,
                                       ),
                                 ),
-                                Text(
-                                  'ดูทั้งหมด > ',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .copyWith(
-                                        fontSize: 14,
-                                        color: Colors.black54,
-                                      ),
+                                InkWell(
+                                  onTap: () {
+                                    onNavigateToScreen(context, '/categoryAll');
+                                  },
+                                  child: Text(
+                                    'ดูทั้งหมด > ',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                          fontSize: 14,
+                                          color: Colors.black54,
+                                        ),
+                                  ),
                                 )
                               ],
                             ),
@@ -308,41 +314,99 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
 
-                      // gridView have crossAxisCount: 2 and scroll horizontal
-                      Container(
-                          width: double.infinity,
-                          height: 200,
-                          child: GridView.builder(
-                              scrollDirection: Axis.horizontal,
-                              primary: false,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisSpacing: 24, crossAxisCount: 2),
-                              itemCount: 20,
-                              itemBuilder: (context, index) => ButtonCategory(
-                                  imgURL:
-                                      'http://localhost:3000/uploads/category/1720010623736-Image.png'))),
+                      // All Category
+                      BlocBuilder<CategoryCubit, CategoryState>(
+                        builder: (context, state) {
+                          if (state is CategoryLoadingState &&
+                              state.isLoading) {
+                            return const CircularProgressIndicator();
+                          } else if (state is CategoryResponseState) {
+                            final categories = state.response;
+                            return SizedBox(
+                              width: double.infinity,
+                              height: 200,
+                              child: GridView.builder(
+                                scrollDirection: Axis.horizontal,
+                                primary: false,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisSpacing: 24,
+                                  crossAxisCount: 2,
+                                ),
+                                itemCount: categories
+                                    .length, // ใช้ length ของ categories
+                                itemBuilder: (context, index) {
+                                  final category = categories[index];
+                                  return ButtonCategory(
+                                    category: category,
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, '/categoryDetail',
+                                          arguments: CategoryDetailArguments(
+                                              id: category.id));
+                                    },
+                                  );
+                                },
+                              ),
+                            );
+                          } else if (state is CategoryResponseErrorState) {
+                            return const Center(
+                              child: Text(
+                                  'Failed to load categories'), // ข้อความแจ้งข้อผิดพลาด
+                            );
+                          } else {
+                            return Text('No categories available');
+                          }
+                        },
+                      ),
+
                       const SizedBox(
                         height: 24,
                       ),
+
                       Expanded(
-                        child: GridView.builder(
-                          clipBehavior: Clip.none,
-                          physics: const NeverScrollableScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          primary: false,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 1,
-                                  mainAxisSpacing: 24,
-                                  crossAxisSpacing: 24),
-                          itemCount: itemC,
-                          itemBuilder: (context, index) {
-                            return ProductItem(
-                              idx: index + 1,
-                              key: ValueKey(index),
-                            );
+                        child: BlocBuilder<ProductCubit, ProductState>(
+                          builder: (context, state) {
+                            if (state is ProductLoadingState &&
+                                state.isLoading) {
+                              return CircularProgressIndicator();
+                            } else if (state is ProductResponseState) {
+                              final products = state.response;
+                              return GridView.builder(
+                                clipBehavior: Clip.none,
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                primary: false,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 1,
+                                        mainAxisSpacing: 24,
+                                        crossAxisSpacing: 24),
+                                itemCount: products.length,
+                                itemBuilder: (context, index) {
+                                  final ProductDetailArguments product =
+                                      ProductDetailArguments(
+                                          product: products[index]);
+
+                                  return ProductItem(
+                                    onPressed: () => Navigator.pushNamed(
+                                        context, '/productDetail',
+                                        arguments: product),
+                                    product: products[index],
+                                    key: ValueKey(index),
+                                  );
+                                },
+                              );
+                            } else if (state is ProductResponseErrorState) {
+                              return const Center(
+                                child: Text(
+                                    'Failed to load products'), // ข้อความแจ้งข้อผิดพลาด
+                              );
+                            } else {
+                              return Text('No categories available');
+                            }
                           },
                         ),
                       )
@@ -392,72 +456,22 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
 
         // *** Container Cart ***
-        Positioned(
-          bottom: 0,
-          width: MediaQuery.of(context).size.width,
-          child: InkWell(
-            onTap: () {
-              onNavigateToScreen(context, '/cart');
-            },
-            child: Container(
-              height: 60,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(boxShadow: const [
-                BoxShadow(color: Colors.black12, blurRadius: 2, spreadRadius: 2)
-              ], color: Theme.of(context).colorScheme.inversePrimary),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.black38),
-                      padding: const EdgeInsets.all(6),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.local_grocery_store_outlined,
-                            size: 16,
-                            color: AppColors.colors['white'],
-                          ),
-                          const SizedBox(
-                            width: 12,
-                          ),
-                          Text(
-                            '1',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall!
-                                .copyWith(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                          )
-                        ],
-                      ),
-                    ),
-                    Text(
-                      'ดูตะกร้าสินค้า',
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14),
-                    ),
-                    Text(
-                      '58.00 บาท',
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
+        BlocBuilder<CartBloc, CartState>(
+          builder: (context, state) {
+            final isHaveCart = state is CartUpdated && state.items.isNotEmpty;
+            if (isHaveCart) {
+              final sumTotal = state.items.map((it) => it.quantity * it.product.price).reduce((value, element) => value + element);
+              final sumQuantity = state.items
+                  .map((it) => it.quantity)
+                  .reduce((prev, curr) => prev + curr);
+              return BottomCart(
+                sumTotal: sumTotal,
+                quantity: sumQuantity,
+              );
+            } else {
+              return const SizedBox();
+            }
+          },
         ),
       ]),
       floatingActionButton: AnimatedOpacity(

@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/asset/image.dart';
-import 'package:flutter_application_1/utils/common.dart';
-import 'package:flutter_application_1/widget/colors.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_application_1/domain/model/response_body/getAllProductResponseBody.dart';
 
-class ProductItem extends StatefulWidget {
-  final int idx;
-  const ProductItem({required this.idx, super.key});
+class ProductItem extends StatelessWidget {
+  final void Function() onPressed;
+  
+  final GetAllProductResponse product;
+  const ProductItem(
+      {required this.product, required this.onPressed, super.key});
 
-  @override
-  State<ProductItem> createState() => _ProductItemState();
-}
-
-class _ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        onNavigateToScreen(context, '/cart');
-      },
+      onTap: onPressed,
       child: Stack(clipBehavior: Clip.none, children: [
         Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Expanded(
@@ -25,8 +20,8 @@ class _ProductItemState extends State<ProductItem> {
               margin: const EdgeInsets.only(bottom: 6),
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage(Asset.images["basket"] as String),
-                    fit: BoxFit.contain),
+                    image: NetworkImage(product.image),
+                    fit: BoxFit.cover),
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(color: Colors.grey[500]!, spreadRadius: 1)
@@ -39,14 +34,14 @@ class _ProductItemState extends State<ProductItem> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "\$2.99",
+                "\$${product.price}",
                 style: Theme.of(context).textTheme.titleSmall!.copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.inversePrimary),
               ),
               Text(
-                "Chocolate 80% ${widget.idx}",
+                "${product.name}",
                 style: Theme.of(context).textTheme.titleSmall!.copyWith(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -55,25 +50,29 @@ class _ProductItemState extends State<ProductItem> {
             ],
           )
         ]),
-        Positioned(
-          right: -10,
-          top: -10,
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.colors['white'],
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.grey[400]!, spreadRadius: .5, blurRadius: 1.5)
-              ],
-            ),
-            padding: const EdgeInsets.all(8),
-            child: Icon(
-              Icons.add,
-              color: Theme.of(context).colorScheme.inversePrimary,
-            ),
-          ),
-        ),
+
+        // GestureDetector(
+        //   onTap: ,
+        //   child: Positioned(
+        //     right: -10,
+        //     top: -10,
+        //     child: Container(
+        //       decoration: BoxDecoration(
+        //         color: AppColors.colors['white'],
+        //         borderRadius: BorderRadius.circular(12),
+        //         boxShadow: [
+        //           BoxShadow(
+        //               color: Colors.grey[400]!, spreadRadius: .5, blurRadius: 1.5)
+        //         ],
+        //       ),
+        //       padding: const EdgeInsets.all(8),
+        //       child: Icon(
+        //         Icons.add,
+        //         color: Theme.of(context).colorScheme.inversePrimary,
+        //       ),
+        //     ),
+        //   ),
+        // ),
       ]),
     );
   }

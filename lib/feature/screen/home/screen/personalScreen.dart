@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/route/app_routes.dart';
+import 'package:flutter_application_1/utils/common.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/domain/cubit/auth/auth.cubit.dart';
 
@@ -29,6 +31,14 @@ class PersonalScreen extends StatelessWidget {
           );
         },
       );
+    }
+
+    void Orders() {
+      return onNavigateToScreen(context, AppRoutes.orders);
+    }
+
+    void MyAddresses() {
+      return onNavigateToScreen(context, AppRoutes.myaddresses);
     }
 
     return Scaffold(
@@ -79,6 +89,7 @@ class PersonalScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       // go to profile
+                      Orders();
                     },
                     child: const ListTile(
                       contentPadding: EdgeInsets.all(0),
@@ -101,6 +112,7 @@ class PersonalScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       // go to change password
+                      MyAddresses();
                     },
                     child: const ListTile(
                       contentPadding: EdgeInsets.all(0),

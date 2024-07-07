@@ -1,49 +1,44 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_application_1/asset/image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_application_1/utils/common.dart';
 import 'package:flutter_application_1/widget/colors.dart';
+import 'package:flutter_application_1/route/app_arguments.dart';
 import 'package:flutter_application_1/widget/constants/button.dart';
+import 'package:flutter_application_1/domain/bloc/cart/cart_bloc.dart';
 
-class ProductDetailScreen extends StatefulWidget {
-  const ProductDetailScreen({super.key});
+class ProductDetailScreen extends StatelessWidget {
+  final ProductDetailArguments arguments;
+  const ProductDetailScreen({required this.arguments, super.key});
 
-  @override
-  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
-}
-
-class _ProductDetailScreenState extends State<ProductDetailScreen> {
-  var isAdd = false;
-
-  void isOnAdd() {
-    setState(() {
-      isAdd = true;
-    });
-  }
-
-  Widget amountButton(BuildContext context) {
+  Widget amountButton(BuildContext context, Function() addCart,
+      Function() deleteCart, int quantity) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          decoration: BoxDecoration(
-              color: AppColors.colors['white'],
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 3,
-                )
-              ],
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  bottomLeft: Radius.circular(12))),
-          width: 65,
-          height: 50,
-          child:  Icon(
-            Icons.remove,
-            color: Theme.of(context).colorScheme.inversePrimary,
-            size: 24,
+        GestureDetector(
+          onTap: deleteCart,
+          child: Container(
+            decoration: BoxDecoration(
+                color: AppColors.colors['white'],
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 3,
+                  )
+                ],
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    bottomLeft: Radius.circular(12))),
+            width: 65,
+            height: 50,
+            child: Icon(
+              Icons.remove,
+              color: Theme.of(context).colorScheme.inversePrimary,
+              size: 24,
+            ),
           ),
         ),
         Container(
@@ -53,30 +48,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               color: Theme.of(context).colorScheme.inversePrimary),
           child: Center(
               child: Text(
-            '1',
+            '$quantity',
             style: Theme.of(context)
                 .textTheme
                 .titleMedium!
                 .copyWith(color: AppColors.colors['white']),
           )),
         ),
-        Container(
-          width: 65,
-          height: 50,
-          decoration: BoxDecoration(
-              color: AppColors.colors['white'],
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 3,
-                )
-              ],
-              borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(12),
-                  bottomRight: Radius.circular(12))),
-          child: Icon(
-            Icons.add,
-            color: Theme.of(context).colorScheme.inversePrimary,
+        GestureDetector(
+          onTap: addCart,
+          child: Container(
+            width: 65,
+            height: 50,
+            decoration: BoxDecoration(
+                color: AppColors.colors['white'],
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 3,
+                  )
+                ],
+                borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(12),
+                    bottomRight: Radius.circular(12))),
+            child: Icon(
+              Icons.add,
+              color: Theme.of(context).colorScheme.inversePrimary,
+            ),
           ),
         ),
       ],
@@ -88,7 +86,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            'Product Details',
+            arguments.product.category.category,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           actions: const [Icon(Icons.favorite_outline)],
@@ -99,27 +97,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             children: [
               Expanded(
                 child: SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.contain,
-                                    image: AssetImage(
-                                        Asset.images['basket'] as String))),
-                          ),
+                        Container(
+                          width: 300,
+                          height: 300,
+                          margin: const EdgeInsets.only(bottom: 32),
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image:
+                                      NetworkImage(arguments.product.image))),
                         ),
                         Expanded(
                             flex: 2,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  '\$0.99',
+                                  '\$${arguments.product.price}',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleLarge!
@@ -130,7 +130,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                               .inversePrimary),
                                 ),
                                 Text(
-                                  'Eti Browni Intense',
+                                  capitalize(arguments.product.name),
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleSmall!
@@ -142,22 +142,31 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 const SizedBox(
                                   height: 24,
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'product Details',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium,
-                                    ),
-                                    Text(
-                                      'Soft moist cake, intense chocolate and delicious chocolate coating… You never know when and under what conditions the Browni Intense Crisis will come… What happens, what happens; there is too much somewhere.',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleSmall,
-                                    )
-                                  ],
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Product Details',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium,
+                                      ),
+                                      Text(
+                                        capitalize(
+                                            arguments.product.description),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall!
+                                            .copyWith(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w300,
+                                                color: Colors.black87),
+                                      )
+                                    ],
+                                  ),
                                 )
                               ],
                             )),
@@ -166,15 +175,46 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                 ),
               ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                child: isAdd
-                    ? amountButton(context)
-                    : AppButton(
+              BlocBuilder<CartBloc, CartState>(
+                builder: (context, state) {
+                  final isHaveCart = state is CartUpdated &&
+                      state.items.isNotEmpty &&
+                      state.items
+                          .where(
+                              (item) => item.product.id == arguments.product.id)
+                          .isNotEmpty;
+                  if (isHaveCart) {
+                    void onAdd() {
+                      return BlocProvider.of<CartBloc>(context).add(
+                          UpdateCartEvent(productId: arguments.product.id));
+                    }
+
+                    void onDelete() {
+                      return BlocProvider.of<CartBloc>(context)
+                          .add(DeleteCartEvent(id: arguments.product.id));
+                    }
+
+                    final currentCartQuantity = state.items
+                        .firstWhere(
+                            (item) => item.product.id == arguments.product.id)
+                        .quantity;
+
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: amountButton(
+                          context, onAdd, onDelete, currentCartQuantity),
+                    );
+                  } else {
+                    return AppButton(
                         text: 'Add To Cart',
                         onPressed: () {
-                          isOnAdd();
-                        }),
+                          final CartItem product =
+                              CartItem(product: arguments.product);
+                          BlocProvider.of<CartBloc>(context)
+                              .add(AddCartEvent(product: product));
+                        });
+                  }
+                },
               )
             ],
           ),
