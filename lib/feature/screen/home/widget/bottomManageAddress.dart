@@ -1,14 +1,17 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_application_1/domain/model/address/address.model.dart';
-import 'package:flutter_application_1/utils/common.dart';
+import 'package:flutter_application_1/domain/model/request_body/addressRequestBody.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_application_1/utils/common.dart';
 import 'package:flutter_application_1/widget/constants/button.dart';
+import 'package:flutter_application_1/domain/model/address/address.model.dart';
 import 'package:flutter_application_1/domain/cubit/address/address_cubit.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class BottomManageAddress extends StatefulWidget {
-  const BottomManageAddress({super.key});
+  final int? id;
+  const BottomManageAddress({this.id, super.key});
 
   @override
   State<BottomManageAddress> createState() => _BottomManageAddressState();
@@ -21,6 +24,9 @@ class _BottomManageAddressState extends State<BottomManageAddress> {
   TextEditingController _zipCode = TextEditingController();
   TextEditingController _address = TextEditingController();
 
+  AddressModel _method = AddressModel(title: 'home');
+  String _userId = '';
+
   @override
   void initState() {
     _addressTitle = TextEditingController();
@@ -29,18 +35,43 @@ class _BottomManageAddressState extends State<BottomManageAddress> {
     _zipCode = TextEditingController();
     _address = TextEditingController();
 
+    void getUserId() async {
+      final userId = await const FlutterSecureStorage().read(key: 'userId');
+      setState(() {
+        if (userId != null) _userId = userId;
+      });
+    }
+
     super.initState();
+    getUserId();
   }
 
   @override
   void dispose() {
     _addressTitle.dispose();
-    // _fullName.dispose();
+    _fullName.dispose();
     _phone.dispose();
     _zipCode.dispose();
     _address.dispose();
 
     super.dispose();
+  }
+
+  void onSubmit(BuildContext context) {
+    if (widget.id != null) {
+      // edit
+    } else {
+      final AddressRequest body = AddressRequest(
+          method: _method.title,
+          addressTitle: _addressTitle.text,
+          fullName: _fullName.text,
+          address: _address.text,
+          phone: _phone.text,
+          userId: int.parse(_userId),
+          zipCode: _zipCode.text);
+
+      context.read<AddressCubit>().createAddress(body, context);
+    }
   }
 
   @override
@@ -54,6 +85,9 @@ class _BottomManageAddressState extends State<BottomManageAddress> {
               onTap: () {
                 final AddressModel selectAddress = AddressModel(title: title);
                 context.read<AddressCubit>().onChangeAddress(selectAddress);
+                setState(() {
+                  _method = AddressModel(title: title);
+                });
               },
               child: Container(
                 padding:
@@ -201,7 +235,11 @@ class _BottomManageAddressState extends State<BottomManageAddress> {
             const SizedBox(
               height: 16,
             ),
-            AppButton(text: 'Add', onPressed: () {})
+            AppButton(
+                text: widget.id != null ? 'Edit' : 'Add',
+                onPressed: () {
+                  onSubmit(context);
+                })
           ],
         ),
       ),

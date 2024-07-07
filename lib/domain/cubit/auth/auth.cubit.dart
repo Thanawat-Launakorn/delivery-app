@@ -6,6 +6,7 @@ import 'package:flutter_application_1/utils/common.dart';
 import 'package:flutter_application_1/domain/db_helper/cache_token.dart';
 import 'package:flutter_application_1/domain/service/auth/authService.dart';
 import 'package:flutter_application_1/domain/model/request_body/authRequestBody.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 part 'auth.state.dart';
 
@@ -22,6 +23,8 @@ class AuthCubit extends Cubit<AuthState> {
         if (value.role == 'client') {
           emit(LoginSuccessState(token: value.access_token));
           _cacheToken.writeToken(value.access_token);
+          const FlutterSecureStorage()
+              .write(key: 'userId', value: value.userId.toString());
         } else {
           emit(LoginFailureState(error: 'not permission'));
         }

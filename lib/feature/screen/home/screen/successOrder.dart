@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/asset/image.dart';
+import 'package:flutter_application_1/route/app_routes.dart';
 import 'package:flutter_application_1/utils/common.dart';
 import 'package:flutter_application_1/widget/constants/button.dart';
 
@@ -23,8 +24,8 @@ class SuccessOrder extends StatelessWidget {
                 decoration: BoxDecoration(
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        image:
-                            AssetImage(Asset.images['successOrder'] as String))),
+                        image: AssetImage(
+                            Asset.images['successOrder'] as String))),
               ),
               const SizedBox(
                 height: 36,
@@ -52,7 +53,9 @@ class SuccessOrder extends StatelessWidget {
                 height: 36,
               ),
               AppButton(
-                  text: 'Trac Order', onPressed: () => Navigator.pop(context)),
+                  text: 'Trac Order',
+                  onPressed: () =>
+                      onNavigateToScreen(context, AppRoutes.orders)),
               const SizedBox(
                 height: 12,
               ),

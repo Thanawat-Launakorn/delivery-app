@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/domain/bloc/cart/cart_bloc.dart';
 import 'package:flutter_application_1/domain/cubit/address/address_cubit.dart';
+import 'package:flutter_application_1/domain/cubit/address/get_address_cubit.dart';
 import 'package:flutter_application_1/domain/cubit/category/category_cubit.dart';
+import 'package:flutter_application_1/domain/cubit/order/create_order_cubit.dart';
+import 'package:flutter_application_1/domain/cubit/order/get_order_cubit.dart';
 import 'package:flutter_application_1/domain/cubit/product/product_cubit.dart';
 import 'route/app_routes.dart' as router;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -92,7 +95,10 @@ class MyApp extends StatelessWidget {
             create: (context) => ProductCubit()..fetchProduct(),
           ),
           BlocProvider(create: (context) => CartBloc()),
-          BlocProvider(create: (context) => AddressCubit())
+          BlocProvider(create: (context) => AddressCubit()),
+          BlocProvider(create: (context) => GetAddressCubit()),
+          BlocProvider(create: (context) => GetOrderCubit()),
+          BlocProvider(create: (context) => CreateOrderCubit()),
 
           // call fetchCategory
         ],

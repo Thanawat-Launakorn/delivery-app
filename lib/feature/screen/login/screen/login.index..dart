@@ -37,10 +37,16 @@ class _LoginScreenState extends State<LoginScreen> {
     //   _password = TextEditingController(text: 'changeme');
     // });
 
-    // // 🧑🏻‍🦰 client
+    // 🧑🏻‍🦰 client
+    // setState(() {
+    //   _email = TextEditingController(text: 'maria@gmail.com');
+    //   _password = TextEditingController(text: 'guess');
+    // });
+
+    // 🧑🏻‍🦰 client
     setState(() {
-      _email = TextEditingController(text: 'maria@gmail.com');
-      _password = TextEditingController(text: 'guess');
+      _email = TextEditingController(text: 'test@gmail.com');
+      _password = TextEditingController(text: '1234');
     });
     super.initState();
   }

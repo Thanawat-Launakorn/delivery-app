@@ -1,80 +1,172 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/domain/bloc/cart/cart_bloc.dart';
+import 'package:flutter_application_1/domain/cubit/address/get_address_cubit.dart';
+import 'package:flutter_application_1/domain/cubit/order/create_order_cubit.dart';
+import 'package:flutter_application_1/domain/model/request_body/orderRequestBody.dart';
+import 'package:flutter_application_1/domain/model/response_body/addressResponseBody.dart';
 import 'package:flutter_application_1/helper/modifyText/index.dart';
 import 'package:flutter_application_1/route/app_arguments.dart';
 import 'package:flutter_application_1/route/app_routes.dart';
 import 'package:flutter_application_1/utils/common.dart';
 import 'package:flutter_application_1/widget/constants/button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 enum MethodCheckout { ADDRESS, PAYMENT, CAMPAIGNS }
 
-class CheckOutScreen extends StatelessWidget {
+class CheckOutScreen extends StatefulWidget {
   final CheckoutArguments arguments;
   const CheckOutScreen({required this.arguments, super.key});
 
   @override
+  State<CheckOutScreen> createState() => _CheckOutScreenState();
+}
+
+class _CheckOutScreenState extends State<CheckOutScreen> {
+  late String _userId;
+  late String _addressId;
+  @override
+  void initState() {
+    void getUserId() async {
+      final userId = await const FlutterSecureStorage().read(key: 'userId');
+      setState(() {
+        if (userId != null) _userId = userId;
+      });
+    }
+
+    super.initState();
+    getUserId();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Widget methodCheckout(MethodCheckout method) {
+      void onSelect(BuildContext context) {
+        context.read<GetAddressCubit>().fetchAddress();
+
+        Widget itemAddress(BuildContext context, AddressResponse data) {
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                _addressId = data.id.toString();
+              });
+              Navigator.pop(context);
+            },
+            child: Column(children: [
+              ListTile(
+                leading: Icon(
+                  data.method == 'home'
+                      ? Icons.home
+                      : data.method == 'work'
+                          ? Icons.work
+                          : Icons.location_on_sharp,
+                  size: 32,
+                ),
+                title: Text(data.addressTitle),
+                subtitle: Text(data.address),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: .5,
+                color: Colors.grey,
+              ),
+            ]),
+          );
+        }
+
+        showModalBottomSheet(
+            backgroundColor: Colors.white,
+            context: context,
+            builder: (context) {
+              return BlocBuilder<GetAddressCubit, GetAddressState>(
+                builder: (context, state) {
+                  final isHaveAddress = state is ResponseGetUserAddressState &&
+                      state.response.isNotEmpty;
+                  if (isHaveAddress) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          return itemAddress(context, state.response[index]);
+                        },
+                        itemCount: state.response.length,
+                      ),
+                    );
+                  } else {
+                    return const SizedBox();
+                  }
+                },
+              );
+            });
+      }
+
       switch (method) {
         case MethodCheckout.ADDRESS:
-          return Container(
-            margin: const EdgeInsets.symmetric(vertical: 12),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Delivery Address',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                    InkWell(
-                      onTap: () => onNavigateToScreen(context, AppRoutes.myaddresses),
-                      child: Text(
-                        'Add Address',
+          return GestureDetector(
+            onTap: () => onSelect(context),
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Delivery Address',
                         style: Theme.of(context)
                             .textTheme
                             .titleMedium!
                             .copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .inversePrimary,
-                                fontSize: 14),
+                                fontWeight: FontWeight.bold, fontSize: 16),
                       ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: .5,
-                        blurRadius: .5,
-                      ),
+                      InkWell(
+                        onTap: () =>
+                            onNavigateToScreen(context, AppRoutes.myaddresses),
+                        child: Text(
+                          'Add Address',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .inversePrimary,
+                                  fontSize: 14),
+                        ),
+                      )
                     ],
                   ),
-                  child: const ListTile(
-                    leading: Icon(
-                      Icons.home,
-                      size: 36,
-                    ),
-                    title: Text('Home'),
-                    subtitle: Text('address'),
-                    trailing: Icon(
-                      Icons.arrow_drop_down,
-                      size: 36,
-                    ),
+                  const SizedBox(
+                    height: 12,
                   ),
-                )
-              ],
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: .5,
+                          blurRadius: .5,
+                        ),
+                      ],
+                    ),
+                    child: const ListTile(
+                      leading: Icon(
+                        Icons.home,
+                        size: 36,
+                      ),
+                      title: Text('Home'),
+                      subtitle: Text('address'),
+                      trailing: Icon(
+                        Icons.arrow_drop_down,
+                        size: 36,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           );
         case MethodCheckout.CAMPAIGNS:
@@ -200,6 +292,18 @@ class CheckOutScreen extends StatelessWidget {
       }
     }
 
+    void onSubmit() {
+      final List<Product> products = widget.arguments.products
+          .map((e) => Product(productId: e.product.id, quantity: e.quantity))
+          .toList();
+      final OrderRequest body = OrderRequest(
+          userId: int.parse(_userId),
+          addressId: int.parse(_addressId),
+          products: products);
+      BlocProvider.of<CartBloc>(context).add(ClearCartEvent());
+      context.read<CreateOrderCubit>().createOrder(body, context);
+    }
+
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(kToolbarHeight),
@@ -275,13 +379,13 @@ class CheckOutScreen extends StatelessWidget {
                                             .copyWith(fontSize: 16),
                                       ),
                                       Text(
-                                        ModifyText.ModifyTextTwoDedimal(
-                                            arguments.products
-                                                .map((cart) =>
-                                                    cart.quantity *
-                                                    cart.product.price)
-                                                .reduce((value, element) =>
-                                                    value + element)),
+                                        ModifyText.ModifyTextTwoDedimal(widget
+                                            .arguments.products
+                                            .map((cart) =>
+                                                cart.quantity *
+                                                cart.product.price)
+                                            .reduce((value, element) =>
+                                                value + element)),
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleMedium!
@@ -366,13 +470,13 @@ class CheckOutScreen extends StatelessWidget {
                                                 fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        ModifyText.ModifyTextTwoDedimal(
-                                            arguments.products
-                                                .map((cart) =>
-                                                    cart.quantity *
-                                                    cart.product.price)
-                                                .reduce((value, element) =>
-                                                    value + element)),
+                                        ModifyText.ModifyTextTwoDedimal(widget
+                                            .arguments.products
+                                            .map((cart) =>
+                                                cart.quantity *
+                                                cart.product.price)
+                                            .reduce((value, element) =>
+                                                value + element)),
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleMedium!
@@ -409,9 +513,11 @@ class CheckOutScreen extends StatelessWidget {
                     const SizedBox(
                       height: 6,
                     ),
-                    AppButton(text: 'Place Order', onPressed: () {
-                      onNavigateToScreen(context, '/successOrder');
-                    })
+                    AppButton(
+                        text: 'Place Order',
+                        onPressed: () {
+                          onSubmit();
+                        })
                   ],
                 ),
               ))

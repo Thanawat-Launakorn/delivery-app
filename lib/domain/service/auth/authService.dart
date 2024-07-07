@@ -8,7 +8,7 @@ import 'package:flutter_application_1/domain/model/response_body/authResponseBod
 
 class AuthService {
   final LoginModel _initialLoginModel =
-      LoginModel(response_status: 0, access_token: '', role: '');
+      LoginModel(response_status: 0, access_token: '', role: '', userId: 0);
   Future<LoginModel> loginService(AuthRequest body) async {
     late LoginModel loginModel;
 

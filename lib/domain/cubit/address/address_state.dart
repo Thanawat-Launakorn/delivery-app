@@ -18,3 +18,14 @@ class LoadingAddressState extends AddressState {
   bool isLoading;
   LoadingAddressState({required this.isLoading});
 }
+
+class LoadingCreateAddressState extends AddressState {
+  bool isLoading;
+  LoadingCreateAddressState({required this.isLoading});
+}
+
+class ResponseErrorCreateAddressState extends AddressState {
+  bool responseError;
+  ResponseErrorCreateAddressState({required this.responseError});
+}
+
